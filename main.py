@@ -26,15 +26,21 @@ from collections import defaultdict
 #    time.sleep(0.1)
 
 startTime = time.time()
-# im = pag.screenshot(region=(728-1920, 39+363, 1191-728,1053-39))
-im = pag.screenshot(region=(1084,374,1464-1084,1124-374))
-im.save(r"firstInput.png")
-imcv = np.array(im)[:, :, ::-1]
+
+#im = pag.screenshot(region=(1084,374,1464-1084,1124-374))
+#im.save(r"firstInput.png")
+
+# uncomment those on Desktop ^ for testing on my laptop im gonna use a saved oldScreenshot
+
+
+#imcv = np.array(im)[:, :, ::-1]
+#imcv.imshow()
 print(f'screenshot taken in {time.time()-startTime} seconds')
 
 # Dark Felt Color = 2,78,70
 # Light Felt Color = 22,149,128
-img = Image.open(r"firstInput.png")
+#img = Image.open(r"firstInput.png")
+img = Image.open(r"oldScreenshot.png")
 pixdata = img.load()
 for y in range(img.size[1]):
     for x in range(img.size[0]):
@@ -87,10 +93,22 @@ for k, v in sorted(acc.items(), key=lambda i: -i[1]):
         circle_centers.append((x,y))
 print(f'circles found in {time.time()-startTime} seconds')
 
+imcv = np.array(output_image)[:, :, ::-1]
+gray = cv2.cvtColor(imcv, cv2.COLOR_BGR2GRAY)
+img_circle = output_image.copy()
+avg_colors =[]
 for x, y, r in circles:
-    r=10 # override since we know radius
+    mask = np.zeros_like(gray)
+    cv2.circle(img_circle, (x, y), r, (0, 0, 255), 2)
+    cv2.circle(mask, (x, y), r, 255, -1)
+    avg_colors.append(cv2.mean(img, mask=mask)[:3])
+    print("average circle color:", avg_colors)
+
+for x, y, r in circles:
+    r = 11 # override since we know radius
     draw_result.ellipse((x-r, y-r, x+r, y+r), outline=(0,0,255,0))
 print(f'cirlces drawn in {time.time()-startTime} seconds')
+
 
 # Save output image
 output_image.save("result.png")
@@ -98,3 +116,4 @@ output_image.save("result.png")
 # alternative methods for better calculations down the road. Take the centers of the balls, and paste over the pixels from the original screenshot within a set radius, since we KNOW that all the balls have the same radius.
 # do a whole second pass on the circle detection by re-chroma-ing usiong the first circle pass to un chroma an area around each ball. ?
 # when drawing the circles, fill in with a certain color, making the stripes different if we can.
+# use cv2's built-in HoughCircles function
