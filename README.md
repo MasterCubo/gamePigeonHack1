@@ -12,3 +12,7 @@ Note that this is HARD-CODED for my PC. i can try and fix that. This relies on L
 
 
 https://github.com/SamuelLBau/Pool-Shot-Tracking-using-FPGA 
+
+Sources for 8 ball algorithm: 
+https://fenix.tecnico.ulisboa.pt/downloadFile/563345090414008/MEIC-66392-David-Silva.pdf 
+https://www-cs-students.stanford.edu/~shoham/www%20papers/CompPool_AIMag_April28.pdf 
